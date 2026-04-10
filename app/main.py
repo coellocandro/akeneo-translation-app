@@ -1,10 +1,16 @@
+# Akeneo sample app: https://github.com/akeneo/sample-apps/tree/main
 from fastapi import FastAPI
 from dotenv import load_dotenv
-from app.config import settings
+from app.akeneo_client import AkeneoClient
 
 load_dotenv()
 app = FastAPI()
 
-@app.get("/test")
-def test() -> dict[str, str]:
-	return {"status": "success"}
+@app.get("/health")
+def health() -> dict[str, str]:
+    return {"status": "ok"}
+
+@app.get("/akeneo-test")
+async def akeneo_test() -> dict:
+    client = AkeneoClient()
+    return await client.ping()
