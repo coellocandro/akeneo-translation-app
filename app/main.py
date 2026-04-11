@@ -1,9 +1,11 @@
-# Akeneo sample app: https://github.com/akeneo/sample-apps/tree/main
-from fastapi import FastAPI
+# Akeneo sample apps: https://github.com/akeneo/sample-apps/tree/main
 from dotenv import load_dotenv
-from app.akeneo_client import AkeneoClient
 
 load_dotenv()
+
+from fastapi import FastAPI
+from app.akeneo_client import AkeneoClient
+
 app = FastAPI()
 
 @app.get("/health")
@@ -14,3 +16,18 @@ def health() -> dict[str, str]:
 async def akeneo_test() -> dict:
     client = AkeneoClient()
     return await client.ping()
+
+@app.get("/products-test")
+async def products_test() -> dict:
+    client = AkeneoClient()
+    return await client.get_products()
+
+@app.get("/auth-test")
+async def auth_test() -> dict:
+    client = AkeneoClient()
+    return await client.get_access_token()
+
+@app.get("/products-auth-test")
+async def products_auth_test() -> dict:
+    client = AkeneoClient()
+    return await client.get_products_authenticated()
