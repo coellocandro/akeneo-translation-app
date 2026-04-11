@@ -7,5 +7,5 @@ services:
     ports:
       - "5000:5000"
     environment:
-      LT_LOAD_ONLY: en,es
+      LT_LOAD_ONLY: en,es,fr,de
     restart: unless-stopped

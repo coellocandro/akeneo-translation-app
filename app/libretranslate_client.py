@@ -7,7 +7,7 @@ class LibreTranslateClient:
         self.base_url = settings.libretranslate_url.rstrip("/")
 
     async def translate_text(self, text: str, source: str, target: str) -> dict:
-        async with httpx.AsyncClient(timeout=10.0) as client:
+        async with httpx.AsyncClient(timeout=20.0) as client:
             response = await client.post(
                 f"{self.base_url}/translate",
                 json={
@@ -20,5 +20,5 @@ class LibreTranslateClient:
             return {
                 "status_code": response.status_code,
                 "ok": response.is_success,
-                "body": response.text[:500],
+                "data": response.json(),
             }

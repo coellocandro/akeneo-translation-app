@@ -86,3 +86,36 @@ class AkeneoClient:
                 "ok": response.is_success,
                 "body": response.text[:1000],
             }
+        
+    async def get_product_values(self, identifier: str) -> dict:
+        token = await self.fetch_access_token()
+
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                f"{self.base_url}/api/rest/v1/products/{identifier}",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+            response.raise_for_status()
+            data = response.json()
+            return {
+                "identifier": data["identifier"],
+                "values": data.get("values", {}),
+            }
+        
+    async def patch_product_values(self, identifier: str, values: dict) -> dict:
+        token = await self.fetch_access_token()
+
+        async with httpx.AsyncClient(timeout=20.0) as client:
+            response = await client.patch(
+                f"{self.base_url}/api/rest/v1/products/{identifier}",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json",
+                },
+                json={"values": values},
+            )
+            return {
+                "status_code": response.status_code,
+                "ok": response.is_success,
+                "body": response.text,
+            }
