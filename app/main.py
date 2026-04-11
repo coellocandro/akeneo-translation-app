@@ -5,6 +5,7 @@ load_dotenv()
 
 from fastapi import FastAPI
 from app.akeneo_client import AkeneoClient
+from app.libretranslate_client import LibreTranslateClient
 
 app = FastAPI()
 
@@ -36,3 +37,8 @@ async def products_auth_test() -> dict:
 async def get_product(identifier: str) -> dict:
     client = AkeneoClient()
     return await client.get_product(identifier)
+
+@app.get("/translate-test")
+async def translate_test() -> dict:
+    client = LibreTranslateClient()
+    return await client.translate_text("Hello world!", "en", "es")
