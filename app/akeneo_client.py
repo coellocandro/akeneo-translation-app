@@ -73,18 +73,16 @@ class AkeneoClient:
                 "body": response.text[:1000],
             }
 
-    # async def get_access_token(self) -> dict:
-    #     async with httpx.AsyncClient(timeout=10.0) as client:
-    #         response = await client.post(
-    #             f"{self.base_url}/api/oauth/v1/token",
-    #             json={
-    #                 "grant_type": "password",
-    #                 "username": settings.akeneo_username,
-    #                 "password": settings.akeneo_password,
-    #             },
-    #         )
-    #         return {
-    #             "status_code": response.status_code,
-    #             "ok": response.is_success,
-    #             "body": response.text[:500],
-    #         }
+    async def get_product(self, identifier: str) -> dict:
+        token = await self.fetch_access_token()
+
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                f"{self.base_url}/api/rest/v1/products/{identifier}",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+            return {
+                "status_code": response.status_code,
+                "ok": response.is_success,
+                "body": response.text[:1000],
+            }

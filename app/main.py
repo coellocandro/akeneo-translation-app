@@ -31,3 +31,8 @@ async def auth_test() -> dict:
 async def products_auth_test() -> dict:
     client = AkeneoClient()
     return await client.get_products_authenticated()
+
+@app.get("/product/{identifier}")
+async def get_product(identifier: str) -> dict:
+    client = AkeneoClient()
+    return await client.get_product(identifier)
