@@ -33,13 +33,19 @@ uvicorn app.main:app --reload
 ```
 FastAPI is now available at http://127.0.0.1:8000 with Swagger docs at http://127.0.0.1:8000/docs
 
-- Verify setup: Since **Akeneo PIM** comes pre-loaded with sample data, you can quickly preview a product translation in your terminal using:\
-```curl "http://127.0.0.1:8000/translate-product/127469?target_locale=fr_FR"```\
-![Terminal Response Preview](assets/product_127469_response_preview.jpg)
+- Verify setup: Since Akeneo PIM comes pre-loaded with sample data, you can quickly preview a product translation in your terminal using:\
+```
+curl "http://127.0.0.1:8000/translate-product/127469?target_locale=fr_FR"
+```
+![Terminal Response Preview](assets/product_127469_response_preview.jpg)\
+\
 And then deliver the translated content to Akeneo using:\
-```curl -X POST "http://127.0.0.1:8000/translate-product/delivery?identifiers=127469&target_locale=fr_FR"```\
-Updating the previously empty Description (fr-FR) attribute as shown below:\
+```
+curl -X POST "http://127.0.0.1:8000/translate-product/delivery?identifiers=127469&target_locale=fr_FR"
+```
+\
+Which will update the Description (fr-FR) attribute in Akeneo as shown below:\
 ![Description (fr_FR) Update](assets/product_127469_edit_history.jpg)\
 \
-Alternatively, you can build your translation request and preview the response via FastAPI at http://127.0.0.1:8000/docs
+Alternatively, you can build your request & preview in your browser (http://127.0.0.1:8000/docs)
 ![FastAPI Browser Preview](assets/product_127469_fastapi_preview_alternative.jpg)
