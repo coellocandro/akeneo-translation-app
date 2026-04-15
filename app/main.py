@@ -8,6 +8,14 @@ from app.libretranslate_client import LibreTranslateClient
 
 app = FastAPI()
 
+@app.get("/")
+def root() -> dict[str, str]:
+    return {
+        "message": "LibreTranslate Akeneo Translation API",
+        "docs": "/docs",
+        "health": "/health",
+    }
+
 def chunk_text(text: str, max_chars: int = 2000) -> list[str]:
     return [text[i:i + max_chars] for i in range(0, len(text), max_chars)]
 
