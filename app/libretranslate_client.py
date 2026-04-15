@@ -17,8 +17,11 @@ class LibreTranslateClient:
                     "format": "text",
                 },
             )
-            return {
-                "status_code": response.status_code,
-                "ok": response.is_success,
-                "data": response.json(),
-            }
+            response.raise_for_status()
+            return response.json()
+
+            # return {
+            #     "status_code": response.status_code,
+            #     "ok": response.is_success,
+            #     "data": response.json(),
+            # }
