@@ -1,7 +1,6 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/LibreTranslate/LibreTranslate/refs/heads/main/libretranslate/static/favicon.ico" width="80"/>
-  <span style="font-size: 24px; margin: 0 10px;">+</span>
-  <img src="https://cdn.worldvectorlogo.com/logos/akeneo-1.svg" width="90"/>
+  <img src="https://raw.githubusercontent.com/LibreTranslate/LibreTranslate/refs/heads/main/libretranslate/static/favicon.ico" width="90"/>
+  <img src="https://static.helpjuice.com/helpjuice_production/uploads/upload/image/13819/3005028/akeneo.png" width="90"/>
 </p>
 <h1 align="center"> LibreTranslate App</h1>
 <p align="center">Akeneo PIM translation app that automates safe, structured translation of product content across locales
@@ -34,6 +33,6 @@ uvicorn app.main:app --reload
 ```
 The API is now available at http://127.0.0.1:8000 with Swagger docs at http://127.0.0.1:8000/docs
 
-- Verify setup: Since **Akeneo PIM** comes pre-loaded with sample data, you can preview a product translation in your terminal  and then deliver it to Akeneo by running the commands below:
-`curl "http://127.0.0.1:8000/translate-product/127469?target_locale=fr_FR"`
+- Verify setup: Since **Akeneo PIM** comes pre-loaded with sample data, you can preview a product translation in your terminal  and then deliver it to Akeneo by running the commands below:\
+`curl "http://127.0.0.1:8000/translate-product/127469?target_locale=fr_FR"`\
 `curl -X POST "http://127.0.0.1:8000/translate-product/delivery?identifiers=127469&target_locale=fr_FR"`
