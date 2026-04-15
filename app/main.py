@@ -1,6 +1,5 @@
-# Akeneo sample apps: https://github.com/akeneo/sample-apps/tree/main
+# Akeneo sample apps: https://github.com/akeneo/sample-apps/
 from dotenv import load_dotenv
-
 load_dotenv()
 
 from fastapi import FastAPI
@@ -12,17 +11,32 @@ app = FastAPI()
 def chunk_text(text: str, max_chars: int = 2000) -> list[str]:
     return [text[i:i + max_chars] for i in range(0, len(text), max_chars)]
 
+def get_attribute_value(values: dict, attribute: str, source_locale: str, scope: str | None) -> dict | None:
+    values_list = values.get(attribute, [])
+
+    default_priority = [
+        (source_locale, scope),
+        (source_locale, None),
+        (None, None)       
+    ]
+
+    for locale, channel in default_priority:
+        for v in values_list:
+            if v.get("locale") != locale:
+                continue
+            if channel is not None and v.get("scope") != channel:
+                continue
+            if not v.get("data"):
+                continue
+            return v
+    return None
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
 
-@app.get("/product/{identifier}")
-async def get_product(identifier: str) -> dict:
-    client = AkeneoClient()
-    return await client.get_product(identifier)
-
 @app.get("/translate-product/{identifier}")
-async def default_translation(
+async def translate_product(
     identifier: str,
     fields: str = "name,description",
     scope: str = "ecommerce",
@@ -33,36 +47,11 @@ async def default_translation(
     akeneo_client = AkeneoClient()
     libretranslate_client = LibreTranslateClient()
 
-    product = await akeneo_client.get_product_values(identifier)
+    product = await akeneo_client.get_content_to_translate(identifier)
     values = product["values"]
-
-    fields_list = [f.strip() for f in fields.split(",")]
-
-    def get_value(attribute: str) -> dict | None:
-        entries = values.get(attribute, [])
-
-        # default to Ecommerce channel/scope & en_US locale
-        scoped = next(
-            (
-                e for e in entries
-                if e.get("locale") == source_locale
-                and e.get("scope") == scope
-                and e.get("data")
-            ),
-            None,
-        )
-        if scoped:
-            return scoped
-
-        # fallback: locale only
-        return next(
-            (
-                e for e in entries
-                if e.get("locale") == source_locale
-                and e.get("data")
-            ),
-            None,
-        )
+    attributes = [f.strip() for f in fields.split(",")]
+    source_lang = source_locale.split("_")[0]
+    target_lang = target_locale.split("_")[0] 
 
     result = {
         "identifier": identifier,
@@ -71,10 +60,9 @@ async def default_translation(
         "target_locale": target_locale,
         "fields": {},
     }
-
-    for field in fields_list:
-        entry = get_value(field)
-
+  
+    for field in attributes:
+        entry = get_attribute_value(values, field, source_locale, scope)
         if not entry:
             result["fields"][field] = {
                 "found": False,
@@ -88,7 +76,7 @@ async def default_translation(
 
         for chunk in chunks:
             translation = await libretranslate_client.translate_text(
-                chunk, "en", target_locale.split("_")[0]
+                chunk, source_lang, target_lang
             )
             translated_text = translation.get("data", {}).get("translatedText", "")
             if translated_text:
@@ -103,9 +91,9 @@ async def default_translation(
 
     return result
 
-@app.post("/translate-products/save")
-async def save_multiple_products(
-    identifiers: str,  # comma-separated
+@app.post("/translate-product/delivery")
+async def deliver_translation(
+    identifiers: str,
     fields: str = "name,description",
     scope: str = "ecommerce",
     source_locale: str = "en_US",
@@ -116,42 +104,22 @@ async def save_multiple_products(
     libretranslate_client = LibreTranslateClient()
 
     ids = [i.strip() for i in identifiers.split(",")]
+    attributes = [f.strip() for f in fields.split(",")]
+    source_lang = source_locale.split("_")[0]
+    target_lang = target_locale.split("_")[0] 
     results = []
-
+    
     for identifier in ids:
-        product = await akeneo_client.get_product_values(identifier)
+        product = await akeneo_client.get_content_to_translate(identifier)
         values = product["values"]
-        fields_list = [f.strip() for f in fields.split(",")]
-
-        def get_value(attribute: str):
-            entries = values.get(attribute, [])
-
-            scoped = next(
-                (
-                    e for e in entries
-                    if e.get("locale") == source_locale
-                    and e.get("scope") == scope
-                    and e.get("data")
-                ),
-                None,
-            )
-            if scoped:
-                return scoped
-
-            return next(
-                (
-                    e for e in entries
-                    if e.get("locale") == source_locale
-                    and e.get("data")
-                ),
-                None,
-            )
-
         target_values = {}
 
-        for field in fields_list:
-            entry = get_value(field)
+        for field in attributes:
+            entry = get_attribute_value(values, field, source_locale, scope)
             if not entry:
+                continue
+
+            if entry.get("locale") is None:
                 continue
 
             chunks = chunk_text(entry["data"])
@@ -159,7 +127,7 @@ async def save_multiple_products(
 
             for chunk in chunks:
                 translated = await libretranslate_client.translate_text(
-                    chunk, "en", target_locale.split("_")[0]
+                    chunk, source_lang, target_lang
                 )
                 translated_text = translated.get("data", {}).get("translatedText", "")
                 if translated_text:
@@ -182,13 +150,13 @@ async def save_multiple_products(
             results.append({"identifier": identifier, "status": "skipped"})
             continue
 
-        patch_response = await akeneo_client.patch_product_values(identifier, target_values)
+        patch_response = await akeneo_client.patch_translation_to_pim(identifier, target_values)
 
         results.append({
             "identifier": identifier,
             "patched": target_values,
-            "status_code": patch_response["status_code"] if target_values else None,
-            "ok": patch_response["ok"] if target_values else False,
+            "status_code": patch_response["status_code"],
+            "ok": patch_response["ok"]
         })
 
     return {"results": results}
