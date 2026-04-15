@@ -38,14 +38,16 @@ FastAPI is now available at http://127.0.0.1:8000 with Swagger docs at http://12
 ```
 curl "http://127.0.0.1:8000/translate-product/127469?target_locale=fr_FR"
 ```
-![Terminal Response Preview](assets/product_127469_response_preview.jpg)\
+![Terminal Response Preview](assets/product_127469_response_preview.jpg)
 \
 And then deliver the translated content to Akeneo using:
 ```
 curl -X POST "http://127.0.0.1:8000/translate-product/delivery?identifiers=127469&target_locale=fr_FR"
 ```
-Which will update the Description (fr-FR) attribute in Akeneo as shown below:\
-![Description (fr_FR) Update](assets/product_127469_edit_history.jpg)\
+Which will update the Description (fr-FR) attribute in Akeneo as shown below:
 \
-Alternatively, you can build your request & preview in your browser (http://127.0.0.1:8000/docs)
+![Description (fr_FR) Update](assets/product_127469_edit_history.jpg)
+\
+-Alternatively, you can build your request & preview in your browser (http://127.0.0.1:8000/docs)
+\
 ![FastAPI Browser Preview](assets/product_127469_fastapi_preview_alternative.jpg)
