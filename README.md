@@ -2,8 +2,8 @@
   <img src="https://raw.githubusercontent.com/LibreTranslate/LibreTranslate/refs/heads/main/libretranslate/static/favicon.ico" width="75"/>
   <img src="https://static.helpjuice.com/helpjuice_production/uploads/upload/image/13819/3005028/akeneo.png" width="80"/>
 </p>
-<h4 align="center"> LibreTranslate App</h1>
-<p align="center">Akeneo PIM translation app that automates structured translation of product content across locales
+<h1 align="center"> LibreTranslate App</h1>
+<h4 align="center">Akeneo PIM translation app that automates structured translation of product content across locales
 </h4>
 
 ## 🌟 Highlights
