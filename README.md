@@ -2,9 +2,9 @@
   <img src="https://raw.githubusercontent.com/LibreTranslate/LibreTranslate/refs/heads/main/libretranslate/static/favicon.ico" width="75"/>
   <img src="https://static.helpjuice.com/helpjuice_production/uploads/upload/image/13819/3005028/akeneo.png" width="80"/>
 </p>
-<h1 align="center"> LibreTranslate App</h1>
-<p align="center">Akeneo PIM translation app that automates safe, structured translation of product content across locales
-</p>
+<h4 align="center"> LibreTranslate App</h1>
+<p align="center">Akeneo PIM translation app that automates structured translation of product content across locales
+</h4>
 
 ## 🌟 Highlights
 - Translates Akeneo product content attributes into preferred language & locale
@@ -31,23 +31,22 @@ source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
-FastAPI is now available at http://127.0.0.1:8000 with Swagger docs at http://127.0.0.1:8000/docs
-\
+> ##### FastAPI is now available at http://127.0.0.1:8000 with Swagger docs at http://127.0.0.1:8000/docs
 - Verify setup: Since Akeneo PIM comes pre-loaded with sample data, you can quickly preview a product translation in your terminal using:
-\
+
 ```
 curl "http://127.0.0.1:8000/translate-product/127469?target_locale=fr_FR"
 ```
 ![Terminal Response Preview](assets/product_127469_response_preview.jpg)
-\
+
 And then deliver the translated content to Akeneo using:
 ```
 curl -X POST "http://127.0.0.1:8000/translate-product/delivery?identifiers=127469&target_locale=fr_FR"
 ```
 Which will update the Description (fr-FR) attribute in Akeneo as shown below:
-\
+
 ![Description (fr_FR) Update](assets/product_127469_edit_history.jpg)
-\
--Alternatively, you can build your request & preview in your browser (http://127.0.0.1:8000/docs)
-\
+
+- Alternatively, you can build your request & preview in your browser (http://127.0.0.1:8000/docs)
+
 ![FastAPI Browser Preview](assets/product_127469_fastapi_preview_alternative.jpg)
