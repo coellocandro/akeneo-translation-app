@@ -20,7 +20,7 @@
 ## ⬇️ Installation & Setup
 - Clone this repo, navigate to its root, and run `docker compose up -d` to start local services:
 [**Akeneo PIM**](https://github.com/akeneo/pim-community-standard) will be available on http://localhost:8080 and [**LibreTranslate API**](https://docs.libretranslate.com/) on http://localhost:5000
-> ### Note: First time initialization of these containers will take 5-10 minutes. Also, first time Docker users may need to enable Hardware Virtualization in BIOS
+> ##### Note: First time initialization of these containers will take 5-10 minutes. Also, first time Docker users may need to enable Hardware Virtualization in BIOS
 
 - Log into Akeneo using admin/admin create & connect a custom app and obtain its credentials by following these steps: https://api.akeneo.com/apps/create-custom-app.html#step-2-create-an-app-get-credentials 
 
